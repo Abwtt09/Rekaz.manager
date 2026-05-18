@@ -1,6 +1,7 @@
 <p align="left">
-  <img src="./assets/logo.png" alt="Rakaz Logo" width="220"/>
+  <img src="./assets/logo.png" alt="Rakaz Logo" width="200"/>
 </p>
+
 # Rakaz Manager
 
 > AI-powered financial operating system for individuals and businesses.
