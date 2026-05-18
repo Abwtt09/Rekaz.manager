@@ -1,4 +1,6 @@
-![Logo](./assets/logo.png)
+<p align="center">
+  <img src="./assets/logo.png" alt="Rakaz Logo" width="220"/>
+</p>
 # Rakaz Manager
 
 > AI-powered financial operating system for individuals and businesses.
