@@ -80,6 +80,28 @@ Generate modern and easy-to-read reports for:
 
 ---
 
+## 🧠 AI Report Explanation
+
+Rakaz includes an intelligent report explanation system designed to make financial reports easier to understand for everyone — even users without accounting or financial experience.
+
+Instead of displaying only numbers and charts, Rakaz transforms complex financial data into clear, human-friendly explanations powered by AI.
+
+The system helps users:
+- Understand financial performance
+- Identify unusual spending patterns
+- Detect risks and inefficiencies
+- Analyze profit and loss trends
+- Receive simplified explanations for charts and metrics
+- Get actionable recommendations for improving financial health
+
+Whether the user is an individual managing personal finances or a business owner reviewing company reports, Rakaz provides clear insights that reduce confusion and improve decision-making.
+
+The goal of this feature is to bridge the gap between raw financial data and real financial understanding.
+
+![Report Explanation](./assets/report-explanation.png)
+
+---
+
 ## 🛒 Rakaz Cashier
 
 Rakaz Cashier is a lightweight and modern POS system designed for simplicity and speed.
