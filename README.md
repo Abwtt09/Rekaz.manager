@@ -1,4 +1,4 @@
-<p align="center">
+<p align="left">
   <img src="./assets/logo.png" alt="Rakaz Logo" width="220"/>
 </p>
 # Rakaz Manager
