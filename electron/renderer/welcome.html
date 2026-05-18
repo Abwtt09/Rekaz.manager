@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ركاز - تسجيل الدخول</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <style>
+    @font-face { font-family: 'Handicrafts'; src: url('assets/fonts/Handicrafts/1774174278664_TheYearofHandicrafts-Regular.otf') format('opentype'); font-weight: 400; }
+    @font-face { font-family: 'Handicrafts'; src: url('assets/fonts/Handicrafts/1774174278664_TheYearofHandicrafts-Medium.otf') format('opentype'); font-weight: 500; }
+    @font-face { font-family: 'Handicrafts'; src: url('assets/fonts/Handicrafts/1774174278664_TheYearofHandicrafts-SemiBold.otf') format('opentype'); font-weight: 600; }
+    @font-face { font-family: 'Handicrafts'; src: url('assets/fonts/Handicrafts/1774174278663_TheYearofHandicrafts-Bold.otf') format('opentype'); font-weight: 700; }
+    :root {
+      --accent: #8B6D5C; --accent-hover: #7A5E4D; --primary: #C2A27E; --primary-light: #d4bd9f;
+      --bg: #FAF7F4; --card: rgba(255,255,255,0.55); --text: #3A3028; --text-sec: #7A6E62; --text-light: #A09890;
+      --border: rgba(139,109,92,0.1); --border-glass: rgba(255,255,255,0.55);
+      --shadow: 0 8px 32px rgba(139,109,92,0.06); --radius: 16px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; scrollbar-width: none; }
+    *::-webkit-scrollbar { display: none; }
+    body {
+      font-family: 'Handicrafts', 'Montserrat', 'Segoe UI', Tahoma, sans-serif;
+      background: var(--bg); color: var(--text); height: calc(100vh - 36px); padding-top: 0;
+      display: flex;  align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+    }
+    body[data-lang="en"] { font-family: 'Montserrat', 'Segoe UI', sans-serif; direction: ltr; }
+
+    /* Background decorations */
+    .bg-shape { position: absolute; border-radius: 50%; opacity: 0.06; pointer-events: none; }
+    .bg-shape.s1 { width: 500px; height: 500px; background: var(--accent); top: -150px; right: -100px; }
+    .bg-shape.s2 { width: 350px; height: 350px; background: var(--primary); bottom: -100px; left: -80px; }
+    .bg-shape.s3 { width: 200px; height: 200px; background: var(--accent); top: 50%; left: 10%; }
+
+    .login-container {
+      background: var(--card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 20px; box-shadow: 0 12px 40px rgba(58,48,40,0.08); border: 1px solid rgba(255,255,255,0.55);
+      padding: 48px 40px; margin-top: 36px; width: 420px; max-width: 92vw; position: relative; z-index: 10; margin-top: 36px;
+      border: 1px solid var(--border);
+    }
+
+    .login-logo {
+      text-align: center; margin-bottom: 32px;
+    }
+    .login-logo img {
+      width: 72px; height: 72px; border-radius: 16px; object-fit: contain;
+      margin-bottom: 12px; background: rgba(139,109,92,0.06); padding: 8px;
+    }
+    .login-logo h1 {
+      font-size: 28px; color: var(--accent); font-weight: 700; margin-bottom: 4px;
+    }
+    .login-logo p {
+      font-size: 13px; color: var(--text-sec); letter-spacing: 0.3px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block; font-size: 13px; font-weight: 600; color: var(--text-sec);
+      margin-bottom: 7px; letter-spacing: 0.3px;
+    }
+    .form-group input {
+      width: 100%; padding: 14px 18px; border: 1.5px solid var(--border);
+      border-radius: 12px; font-size: 15px; font-family: inherit;
+      color: var(--text); background: var(--bg); outline: none;
+      transition: all 0.25s ease;
+    }
+    .form-group input:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139,109,92,0.1);
+      background: #fff;
+    }
+    .form-group input::placeholder { color: var(--text-light); }
+
+    .login-btn {
+      width: 100%; padding: 16px; background: var(--accent); color: #fff;
+      border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
+      font-family: inherit; cursor: pointer; transition: all 0.25s ease;
+      margin-top: 10px; letter-spacing: 0.3px;
+    }
+    .login-btn:hover { background: var(--accent-hover); box-shadow: 0 4px 12px rgba(139,109,92,0.3); transform: translateY(-1px); }
+    .login-btn:active { transform: translateY(0); }
+    .login-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .login-error {
+      display: none; background: rgba(196,94,78,0.08); color: #c45e4e;
+      padding: 10px 14px; border-radius: 8px; font-size: 13px;
+      margin-bottom: 16px; border: 1px solid rgba(196,94,78,0.15);
+      text-align: center;
+    }
+    .login-error.show { display: block; animation: shake 0.4s ease; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .lang-switch {
+      position: absolute; top: 16px; left: 16px;
+      background: rgba(139,109,92,0.08); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 14px; font-size: 12px;
+      cursor: pointer; color: var(--accent); font-family: inherit;
+      transition: all 0.2s ease;
+    }
+    [dir="ltr"] .lang-switch { left: auto; right: 16px; }
+    .lang-switch:hover { background: rgba(139,109,92,0.15); }
+
+    .footer-text {
+      text-align: center; margin-top: 24px; font-size: 11px; color: var(--text-light);
+    }
+
+    .input-icon-wrap {
+      position: relative;
+    }
+    .input-icon {
+      position: absolute; top: 50%; right: 14px; transform: translateY(-50%);
+      font-size: 16px; color: var(--text-light); pointer-events: none;
+    }
+    [dir="ltr"] .input-icon { right: auto; left: 14px; }
+    .input-icon-wrap input { padding-right: 42px; }
+    [dir="ltr"] .input-icon-wrap input { padding-right: 16px; padding-left: 42px; }
+
+    .spinner { display: none; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite;
+      margin: 0 auto; }
+    .spinner.show { display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Version badge */
+    .version-badge {
+      position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%);
+      font-size: 10px; color: var(--text-light); opacity: 0.5;
+    }
+  </style>
+</head>
+<body data-lang="ar">
+<div style="position:fixed;top:0;left:0;right:0;height:36px;background:rgba(250,247,244,0.95);backdrop-filter:blur(12px);display:flex;direction:ltr;align-items:center;justify-content:space-between;z-index:99999;border-bottom:1px solid rgba(139,109,92,0.06);padding:0 8px;-webkit-app-region:drag;">
+  <div style="display:flex;-webkit-app-region:no-drag;">
+    <button onclick="if(window.electronAPI)electronAPI.winClose()" style="width:44px;height:36px;border:none;background:none;cursor:pointer;color:#A09890;font-size:15px;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.background='#C45E4E';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='#A09890'">&#10005;</button>
+    <button onclick="if(window.electronAPI)electronAPI.winMaximize()" style="width:44px;height:36px;border:none;background:none;cursor:pointer;color:#A09890;font-size:13px;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.background='rgba(0,0,0,0.06)'" onmouseout="this.style.background='none'">&#9633;</button>
+    <button onclick="if(window.electronAPI)electronAPI.winMinimize()" style="width:44px;height:36px;border:none;background:none;cursor:pointer;color:#A09890;font-size:18px;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.background='rgba(0,0,0,0.06)'" onmouseout="this.style.background='none'">&#8211;</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;-webkit-app-region:no-drag;">
+    <span style="font-size:0.72rem;font-weight:700;color:#8B6D5C;">ركاز</span>
+    <img src="assets/img/logo-icon.png" style="height:18px;border-radius:3px;" onerror="this.style.display='none'">
+  </div>
+</div>
+  <div class="bg-shape s1"></div>
+  <div class="bg-shape s2"></div>
+  <div class="bg-shape s3"></div>
+
+  <button class="lang-switch" onclick="toggleLang()" id="langBtn">English</button>
+
+  <div class="login-container">
+    <div class="login-logo">
+      <img src="assets/img/logo-icon.png" alt="ركاز" onerror="this.style.display='none'">
+      <h1 id="appTitle">ركاز</h1>
+      <p id="appSubtitle">نظام محاسبة سحابي متكامل</p>
+    </div>
+
+    <div class="login-error" id="loginError"></div>
+
+    <div class="form-group">
+      <label id="lblCompany">اسم الشركة</label>
+      <div class="input-icon-wrap">
+        <span class="input-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg></span>
+        <input type="text" id="companyName" placeholder="أدخل اسم الشركة..." autocomplete="organization">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label id="lblUsername">اسم المستخدم</label>
+      <div class="input-icon-wrap">
+        <span class="input-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+        <input type="text" id="username" placeholder="أدخل اسم المستخدم..." autocomplete="username">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label id="lblPassword">كلمة المرور</label>
+      <div class="input-icon-wrap">
+        <span class="input-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        <input type="password" id="password" placeholder="أدخل كلمة المرور..." autocomplete="current-password">
+      </div>
+    </div>
+
+    <button class="login-btn" id="loginBtn" onclick="handleLogin()">
+      <span id="loginBtnText">تسجيل الدخول</span>
+      <div class="spinner" id="loginSpinner"></div>
+    </button>
+
+    <!-- Quick Login Card -->
+    <div id="lastAccountCard" style="display:none;margin-top:16px;background:rgba(139,109,92,0.04);border:1px solid rgba(139,109,92,0.08);border-radius:14px;padding:14px;cursor:pointer;transition:all .3s;" onclick="quickLogin()" onmouseover="this.style.background='rgba(139,109,92,0.08)'" onmouseout="this.style.background='rgba(139,109,92,0.04)'">
+      <div style="font-size:0.72rem;color:var(--text-light);margin-bottom:6px;text-align:center;">تسجيل دخول سريع</div>
+      <div style="display:flex;align-items:center;gap:10px;justify-content:center;">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(139,109,92,0.08);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:0.95rem;" id="lastAccountAvatar">م</div>
+        <div style="text-align:start;"><div style="font-weight:600;font-size:0.88rem;" id="lastAccountName"></div><div style="font-size:0.72rem;color:var(--text-sec);" id="lastAccountCompany"></div></div>
+      </div>
+    </div>
+
+    <p class="footer-text" id="footerText">بياناتك مشفرة ومحمية بأعلى معايير الأمان</p>
+  </div>
+
+  
+
+
+  
+  </div>
+  <div class="version-badge">Rekaz v1.0</div>
+
+<script>
+  history.pushState(null,null,location.href);window.onpopstate=()=>history.pushState(null,null,location.href);
+  let currentLang = localStorage.getItem('rekaz_lang') || 'ar';
+
+  // AUTO-LOGIN: if session exists, skip to dashboard
+  const savedCompany = localStorage.getItem('rekaz_companyId');
+  const savedUser = localStorage.getItem('rekaz_username');
+  if (savedCompany && savedUser) {
+
+      // Save last account
+      localStorage.setItem('rekaz_last_companyId', companyId);
+      localStorage.setItem('rekaz_last_username', username);
+      localStorage.setItem('rekaz_last_displayName', displayName || fullName || username);
+      localStorage.setItem('rekaz_last_companyName', companyData.companyName || companyData.nameAr || '');
+      localStorage.setItem('rekaz_last_role', role);
+
+    goToChoice();
+  }
+
+
+  // Show last account if available
+  const lastCompany = localStorage.getItem('rekaz_last_companyId');
+  const lastUser = localStorage.getItem('rekaz_last_username');
+  const lastCompanyName = localStorage.getItem('rekaz_last_companyName');
+  const lastDisplayName = localStorage.getItem('rekaz_last_displayName');
+  if (lastCompany && lastUser && !savedCompany) {
+    const card = document.getElementById('lastAccountCard');
+    card.style.display = '';
+    document.getElementById('lastAccountName').textContent = lastDisplayName || lastUser;
+    document.getElementById('lastAccountCompany').textContent = lastCompanyName || '';
+    document.getElementById('lastAccountAvatar').textContent = (lastDisplayName || lastUser).charAt(0).toUpperCase();
+  }
+
+  function quickLogin() {
+    const lc = localStorage.getItem('rekaz_last_companyId');
+    const lu = localStorage.getItem('rekaz_last_username');
+    const ld = localStorage.getItem('rekaz_last_displayName');
+    const lr = localStorage.getItem('rekaz_last_role');
+    if (lc && lu) {
+      localStorage.setItem('rekaz_companyId', lc);
+      localStorage.setItem('rekaz_username', lu);
+      localStorage.setItem('rekaz_displayName', ld || lu);
+      localStorage.setItem('rekaz_role', lr || 'admin');
+      goToChoice();
+    }
+  }
+
+  applyLang();
+
+  // Focus first field
+  document.getElementById('companyName').focus();
+
+  // Enter key handling
+  document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const inputs = Array.from(document.querySelectorAll('input'));
+        const idx = inputs.indexOf(e.target);
+        if (idx < inputs.length - 1) {
+          inputs[idx + 1].focus();
+        } else {
+          handleLogin();
+        }
+      }
+    });
+  });
+
+  function toggleLang() {
+    currentLang = currentLang === 'ar' ? 'en' : 'ar';
+    localStorage.setItem('rekaz_lang', currentLang);
+  
+  // Show last account if available
+  const lastCompany = localStorage.getItem('rekaz_last_companyId');
+  const lastUser = localStorage.getItem('rekaz_last_username');
+  const lastCompanyName = localStorage.getItem('rekaz_last_companyName');
+  const lastDisplayName = localStorage.getItem('rekaz_last_displayName');
+  if (lastCompany && lastUser && !savedCompany) {
+    const card = document.getElementById('lastAccountCard');
+    card.style.display = '';
+    document.getElementById('lastAccountName').textContent = lastDisplayName || lastUser;
+    document.getElementById('lastAccountCompany').textContent = lastCompanyName || '';
+    document.getElementById('lastAccountAvatar').textContent = (lastDisplayName || lastUser).charAt(0).toUpperCase();
+  }
+
+  function quickLogin() {
+    const lc = localStorage.getItem('rekaz_last_companyId');
+    const lu = localStorage.getItem('rekaz_last_username');
+    const ld = localStorage.getItem('rekaz_last_displayName');
+    const lr = localStorage.getItem('rekaz_last_role');
+    if (lc && lu) {
+      localStorage.setItem('rekaz_companyId', lc);
+      localStorage.setItem('rekaz_username', lu);
+      localStorage.setItem('rekaz_displayName', ld || lu);
+      localStorage.setItem('rekaz_role', lr || 'admin');
+      goToChoice();
+    }
+  }
+
+  applyLang();
+  }
+
+  function applyLang() {
+    const isAr = currentLang === 'ar';
+    document.documentElement.lang = currentLang;
+    document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+    document.body.setAttribute('data-lang', currentLang);
+
+    document.getElementById('langBtn').textContent = isAr ? 'English' : 'العربية';
+    document.getElementById('appTitle').textContent = isAr ? 'ركاز' : 'Rekaz';
+    document.getElementById('appSubtitle').textContent = isAr ? 'نظام محاسبة سحابي متكامل' : 'Cloud Accounting System';
+    document.getElementById('lblCompany').textContent = isAr ? 'اسم الشركة' : 'Company Name';
+    document.getElementById('lblUsername').textContent = isAr ? 'اسم المستخدم' : 'Username';
+    document.getElementById('lblPassword').textContent = isAr ? 'كلمة المرور' : 'Password';
+    document.getElementById('loginBtnText').textContent = isAr ? 'تسجيل الدخول' : 'Login';
+    document.getElementById('footerText').textContent = isAr ? 'بياناتك مشفرة ومحمية بأعلى معايير الأمان' : 'Your data is encrypted and secure | Version 1.0';
+    document.getElementById('companyName').placeholder = isAr ? 'أدخل اسم الشركة...' : 'Enter company name...';
+    document.getElementById('username').placeholder = isAr ? 'أدخل اسم المستخدم...' : 'Enter username...';
+    document.getElementById('password').placeholder = isAr ? 'أدخل كلمة المرور...' : 'Enter password...';
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('loginError');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 5000);
+  }
+
+  async function handleLogin() {
+    const companyName = document.getElementById('companyName').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const isAr = currentLang === 'ar';
+
+    if (!companyName || !username || !password) {
+      showError(isAr ? 'يرجى تعبئة جميع الحقول' : 'Please fill in all fields');
+      return;
+    }
+
+    const btn = document.getElementById('loginBtn');
+    const btnText = document.getElementById('loginBtnText');
+    const spinner = document.getElementById('loginSpinner');
+
+    btn.disabled = true;
+    btnText.style.display = 'none';
+    spinner.classList.add('show');
+
+    try {
+      // Step 1: Find the company - try multiple field names
+      let companyDoc = null;
+      let companyId = null;
+
+      // Try searching by different possible field names
+      const searchFields = ['companyName', 'companyNameEn', 'nameAr', 'nameEn', 'name'];
+      for (const field of searchFields) {
+        try {
+          const snap = await db.collection('companies')
+            .where(field, '==', companyName)
+            .limit(1)
+            .get();
+          if (!snap.empty) {
+            companyDoc = snap.docs[0];
+            companyId = companyDoc.id;
+            break;
+          }
+        } catch(e) { /* field may not exist, continue */ }
+      }
+
+      // Also try matching by document ID directly
+      if (!companyDoc) {
+        try {
+          const directDoc = await db.collection('companies').doc(companyName).get();
+          if (directDoc.exists) {
+            companyDoc = directDoc;
+            companyId = directDoc.id;
+          }
+        } catch(e) {}
+      }
+
+      // Last resort: get all companies and find by partial match
+      if (!companyDoc) {
+        try {
+          const allSnap = await db.collection('companies').get();
+          for (const doc of allSnap.docs) {
+            const data = doc.data();
+            const names = [
+              data.companyName, data.companyNameEn, data.nameAr, data.nameEn, data.name
+            ].filter(Boolean).map(n => n.toLowerCase().trim());
+            if (names.includes(companyName.toLowerCase().trim())) {
+              companyDoc = doc;
+              companyId = doc.id;
+              break;
+            }
+          }
+        } catch(e) {}
+      }
+
+      if (!companyDoc || !companyId) {
+        showError(isAr ? 'الشركة غير موجودة' : 'Company not found');
+        return;
+      }
+
+      const companyData = companyDoc.data();
+
+      // Step 2: Check admin credentials (try multiple field names for password)
+      const adminUsernames = ['admin', companyData.adminUsername, companyData.admin_username].filter(Boolean);
+      if (adminUsernames.includes(username)) {
+        const adminPasswords = [companyData.adminPassword, companyData.admin_password, companyData.password].filter(Boolean);
+        if (adminPasswords.includes(password)) {
+          loginSuccess(companyId, username, 'admin');
+          return;
+        }
+      }
+
+      // Step 3: Check app users subcollection
+      const usersSnap = await db.collection('companies').doc(companyId)
+        .collection('appUsers')
+        .where('username', '==', username)
+        .limit(1)
+        .get();
+
+      if (usersSnap.empty) {
+        showError(isAr ? 'المستخدم غير موجود' : 'User not found');
+        return;
+      }
+
+      const userData = usersSnap.docs[0].data();
+      if (userData.password !== password) {
+        showError(isAr ? 'كلمة المرور خاطئة' : 'Wrong password');
+        return;
+      }
+
+      if (userData.isActive === false) {
+        showError(isAr ? 'الحساب معطّل. تواصل مع المدير.' : 'Account disabled. Contact admin.');
+        return;
+      }
+
+      loginSuccess(companyId, username, userData.role || 'user');
+
+    } catch (e) {
+      console.error('Login error:', e);
+      showError(isAr ? 'خطأ في الاتصال. حاول مرة أخرى.' : 'Connection error. Try again.');
+    } finally {
+      btn.disabled = false;
+      btnText.style.display = '';
+      spinner.classList.remove('show');
+    }
+  }
+
+  function loginSuccess(companyId, username, role) {
+    localStorage.setItem('rekaz_companyId', companyId);
+    localStorage.setItem('rekaz_username', username);
+    localStorage.setItem('rekaz_role', role);
+    localStorage.setItem('rekaz_lang', currentLang);
+
+    // Navigate to dashboard
+    goToChoice();
+  }
+</script>
+
+<!-- App Choice Overlay -->
+<div id="appChoiceOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);align-items:center;justify-content:center;flex-direction:column;animation:fadeIn .4s ease;">
+  <img src="assets/img/logo-icon.png" style="height:56px;border-radius:12px;margin-bottom:20px;" onerror="this.style.display='none'">
+  <h2 style="font-size:1.4rem;color:var(--accent);margin-bottom:6px;">مرحبا بك في ركاز</h2>
+  <p style="color:var(--text-sec);font-size:0.88rem;margin-bottom:32px;">اختر الوضع الذي تريد استخدامه</p>
+  <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;">
+    <!-- Financial Management -->
+    <div onclick="launchApp('accounting')" style="width:220px;background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border-glass);border-radius:20px;padding:32px 24px;text-align:center;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(139,109,92,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+      <div style="width:64px;height:64px;border-radius:16px;background:rgba(139,109,92,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </div>
+      <h3 style="font-size:1.05rem;color:var(--text);margin-bottom:6px;">ركاز للمحاسبة</h3>
+      <p style="font-size:0.78rem;color:var(--text-sec);line-height:1.5;">إدارة مالية شاملة - قيود، فواتير، تقارير</p>
+    </div>
+    <!-- POS -->
+    <div onclick="launchApp('pos')" style="width:220px;background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border-glass);border-radius:20px;padding:32px 24px;text-align:center;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(139,109,92,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+      <div style="width:64px;height:64px;border-radius:16px;background:rgba(194,162,126,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      </div>
+      <h3 style="font-size:1.05rem;color:var(--text);margin-bottom:6px;">ركاز كاشير</h3>
+      <p style="font-size:0.78rem;color:var(--text-sec);line-height:1.5;">نقاط بيع سريعة - بحث، سلة، إيصال</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function goToChoice() { if(typeof electronAPI!=='undefined')electronAPI.navigate('appchoice');else location.href='appchoice.html'; }
+function showAppChoice() {
+  document.getElementById('appChoiceOverlay').style.display = 'flex';
+}
+
+function launchApp(mode) {
+  localStorage.setItem('rekaz_appMode', mode);
+  if (mode === 'pos') {
+    if (typeof electronAPI !== 'undefined') {
+      electronAPI.navigate('pos');
+    } else {
+      window.location.href = 'pos.html';
+    }
+  } else {
+    if (typeof electronAPI !== 'undefined') {
+      electronAPI.navigate('dashboard');
+    } else {
+      window.location.href = 'dashboard.html';
+    }
+  }
+}
+</script>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function(){
+  if(typeof gsap==='undefined') return;
+  // Background shapes float
+  gsap.to('.bg-shape.s1',{y:-30,x:20,duration:6,repeat:-1,yoyo:true,ease:'sine.inOut'});
+  gsap.to('.bg-shape.s2',{y:25,x:-15,duration:7,repeat:-1,yoyo:true,ease:'sine.inOut',delay:.8});
+  gsap.to('.bg-shape.s3',{y:-20,x:10,duration:5,repeat:-1,yoyo:true,ease:'sine.inOut',delay:1.5});
+
+  // Card entrance: explode in from bottom with rotation
+  gsap.fromTo('.login-container',
+    {y:80,opacity:0,rotationX:15,scale:.9},
+    {y:0,opacity:1,rotationX:0,scale:1,duration:.9,ease:'back.out(1.8)',delay:.2,
+     transformPerspective:800}
+  );
+  // Logo bounce
+  gsap.fromTo('.login-logo img',
+    {scale:0,rotation:-20},
+    {scale:1,rotation:0,duration:.8,ease:'elastic.out(1,.5)',delay:.6}
+  );
+  gsap.from('.login-logo h1',{y:20,opacity:0,duration:.5,ease:'power3.out',delay:.85});
+  gsap.from('.login-logo p', {y:15,opacity:0,duration:.5,ease:'power2.out',delay:1});
+  // Form fields cascade
+  gsap.from('.form-group',{y:25,opacity:0,duration:.45,ease:'power3.out',stagger:.1,delay:1.1});
+  gsap.from('.login-btn',{y:20,opacity:0,scale:.95,duration:.5,ease:'back.out(2)',delay:1.45});
+
+  // Button press effect
+  const btn = document.querySelector('.login-btn');
+  if(btn){
+    btn.addEventListener('mousedown',()=>gsap.to(btn,{scale:.96,duration:.1}));
+    btn.addEventListener('mouseup',()=>gsap.to(btn,{scale:1,duration:.3,ease:'elastic.out(1.5,.4)'}));
+    btn.addEventListener('mouseleave',()=>gsap.to(btn,{scale:1,duration:.2}));
+  }
+})();
+</script>
+
+</body>
+</html>
