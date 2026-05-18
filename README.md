@@ -1,4 +1,5 @@
-![Logo](./assets/logo.png) # Rakaz Manager
+![Logo](./assets/logo.png)
+# Rakaz Manager
 
 > AI-powered financial operating system for individuals and businesses.
 
