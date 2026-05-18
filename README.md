@@ -1,4 +1,4 @@
-# Rakaz
+# Rakaz Manager
 
 > AI-powered financial operating system for individuals and businesses.
 
@@ -24,15 +24,11 @@ Rakaz focuses on simplicity, accessibility, and modern user experience — makin
 
 ## Main Dashboard
 
-> Add a screenshot of the main dashboard here
-
 ![Rakaz Dashboard](./assets/dashboard-preview.png)
 
 ---
 
 ## AI Financial Assistant
-
-> Add a screenshot showing the AI insights or analytics page
 
 ![AI Assistant](./assets/ai-assistant.png)
 
@@ -40,17 +36,7 @@ Rakaz focuses on simplicity, accessibility, and modern user experience — makin
 
 ## Rakaz Cashier (POS)
 
-> Add a screenshot of the cashier interface or sales screen
-
 ![Rakaz Cashier](./assets/rakaz-cashier.png)
-
----
-
-## Mobile Experience
-
-> Add screenshots showing the mobile UI and responsiveness
-
-![Mobile UI](./assets/mobile-ui.png)
 
 ---
 
@@ -63,8 +49,6 @@ Rakaz focuses on simplicity, accessibility, and modern user experience — makin
 - Budget planning
 - Financial categorization
 - Smart summaries
-
-> Add screenshot of transactions page here
 
 ![Transactions](./assets/transactions.png)
 
@@ -79,8 +63,6 @@ Rakaz uses AI-driven systems to help users:
 - Suggest financial improvements
 - Build smarter financial habits
 
-> Add screenshot of AI analysis here
-
 ![AI Analytics](./assets/ai-analysis.png)
 
 ---
@@ -93,8 +75,6 @@ Generate modern and easy-to-read reports for:
 - Monthly reports
 - Business performance
 - Sales tracking
-
-> Add screenshot of charts and reports here
 
 ![Reports](./assets/reports.png)
 
@@ -112,24 +92,18 @@ Features include:
 - Clean and simple UI
 - Touch-friendly interface
 
-> Add screenshot of POS sales page here
-
 ![POS System](./assets/pos-system.png)
 
 ---
 
 ## 🌐 Cross Platform
 
-Rakaz is designed to work across:
+Rakaz is will be designed to work across:
 - Desktop
 - Mobile
 - Tablets
 
 Creating a seamless financial experience everywhere.
-
-> Add image showing multiple devices here
-
-![Cross Platform](./assets/cross-platform.png)
 
 ---
 
@@ -140,8 +114,6 @@ Rakaz currently supports:
 - English 🇺🇸
 
 Future updates will include support for additional languages.
-
-> Add screenshot showing language switching here
 
 ![Languages](./assets/languages.png)
 
@@ -171,36 +143,3 @@ Especially in regions where financial tools are often outdated, overly complex, 
 - Financial forecasting
 - API integrations
 - Open ecosystem support
-
----
-
-# 🛠️ Tech Stack
-
-## Frontend
-- [Add your frontend framework]
-
-## Backend
-- [Add your backend framework]
-
-## Database
-- [Add your database]
-
-## AI Services
-- [Add AI technologies]
-
-## Hosting / Infrastructure
-- [Add hosting technologies]
-
----
-
-# 📂 Project Structure
-
-```bash
-rakaz/
-│
-├── frontend/
-├── backend/
-├── mobile/
-├── assets/
-├── docs/
-└── README.md
