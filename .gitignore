@@ -1,1 +1,42 @@
+# ENV / SECRETS (IMPORTANT)
 .env
+.env.local
+.env.development
+.env.production
+.env.*.local
+
+# مفاتيح و أسرار
+*.key
+*.pem
+credentials.json
+service-account.json
+secrets.json
+
+# DEPENDENCIES
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# BUILD OUTPUT
+dist/
+build/
+out/
+
+# IDE / EDITOR
+.vscode/
+.idea/
+*.code-workspace
+
+# OS FILES
+.DS_Store
+Thumbs.db
+
+# LOGS / CACHE
+logs/
+*.log
+.cache/
+.tmp/
+
+# OPTIONAL (If React/Vite)
+.vite/
